@@ -7,6 +7,7 @@
 #            de dados e do perfil de execução.
 # AUTOR: Julian de Almeida Santos
 # DATA: 2025-10-20
+# REPOSITÓRIO: github.com
 # USO: ./run.sh
 # ==============================================================================
 
@@ -30,13 +31,13 @@ echo "###################################################"
 echo "🚀 Bem-vindo ao Assistente de Inicialização do Protheus Docker"
 echo "💡 DICA: Você também pode usar nosso gerador web para criar seu"
 echo "   arquivo customizado de forma visual e rápida:"
-echo "   👉 https://juliansantosinfo.github.io/TOTVS-Protheus-Compose-Generator/"
+echo "   👉 github.io"
 echo "###################################################"
 
 # 1. Escolha do Banco de Dados
 print_header "1. Escolha do Banco de Dados"
 echo "Qual banco de dados você gostaria de usar?"
-select db_choice in "PostgreSQL (Recomendado)" "Microsoft SQL Server" "Oracle SQL Server"; do
+select db_choice in "PostgreSQL (Recomendado)" "Microsoft SQL Server" "Oracle Database"; do
     case $db_choice in
         "PostgreSQL (Recomendado)")
             COMPOSE_FILE="docker-compose-postgresql.yaml"
@@ -46,31 +47,39 @@ select db_choice in "PostgreSQL (Recomendado)" "Microsoft SQL Server" "Oracle SQ
             COMPOSE_FILE="docker-compose-mssql.yaml"
             break
             ;;
-        "Oracle SQL Server")
+        "Oracle Database")
             COMPOSE_FILE="docker-compose-oracle.yaml"
             break
             ;;
         *)
-            echo "Opção inválida. Por favor, digite 1 ou 2."
+            echo "Opção inválida. Por favor, digite 1, 2 ou 3."
             ;;
     esac
 done
 
-# 2. Escolha do Perfil (API REST)
-print_header "2. Iniciar Serviços da API REST?"
-echo "Você deseja incluir os serviços da API REST e SmartView (perfil 'full')?"
-select profile_choice in "Sim" "Não"; do
+# 2. Escolha do Perfil de Execução
+print_header "2. Escolha o Perfil de Inicialização"
+echo "Selecione quais serviços adicionais deseja carregar:"
+select profile_choice in "Apenas API REST (with-rest)" "API REST + SmartView (full)" "Apenas SmartView (with-smartview)" "Nenhum (Apenas AppServer Padrão)"; do
     case $profile_choice in
-        "Sim")
+        "Apenas API REST (with-rest)")
+            PROFILE_ARG="--profile with-rest"
+            break
+            ;;
+        "API REST + SmartView (full)")
             PROFILE_ARG="--profile full"
             break
             ;;
-        "Não")
+        "Apenas SmartView (with-smartview)")
+            PROFILE_ARG="--profile with-smartview"
+            break
+            ;;
+        "Nenhum (Apenas AppServer Padrão)")
             PROFILE_ARG=""
             break
             ;;
         *)
-            echo "Opção inválida. Por favor, digite 1 ou 2."
+            echo "Opção inválida. Por favor, digite 1, 2, 3 ou 4."
             ;;
     esac
 done
@@ -88,7 +97,7 @@ fi
 
 # 4. Confirmação e Execução
 print_header "4. Confirmação e Execução"
-# Constrói o comando final
+# Constrói o comando final sem o argumento '--build' para usar imagens prontas
 final_command="docker compose -f ${COMPOSE_FILE} -p totvs ${PROFILE_ARG} up -d"
 
 echo "O seguinte comando será executado:"
