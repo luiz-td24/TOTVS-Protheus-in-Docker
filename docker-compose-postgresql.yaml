@@ -80,6 +80,8 @@ services:
       DBACCESS_LICENSE_PORT: 5555
       DBACCESS_CONSOLEFILE: /totvs/dbaccess/multi/dbconsole.log
       TZ: ${TZ:-America/Sao_Paulo}
+    volumes:
+      - ./services/dbaccess/setup-database.sh:/setup-database.sh
     networks:
       - totvs
     depends_on:
