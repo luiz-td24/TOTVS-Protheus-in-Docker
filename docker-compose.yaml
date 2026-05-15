@@ -123,7 +123,12 @@ services:
     volumes:
       - totvs_protheus_data:/totvs/protheus_data
       - totvs_appserver_apo:/totvs/protheus/apo
-      # - totvs_appserver_data:/totvs/protheus/bin/appserver
+      # Sobrescreve scripts e templates internos com as versões locais (contém fix SpecialKey)
+      - ./services/appserver/entrypoint.sh:/entrypoint.sh
+      - ./services/appserver/service.sh:/service.sh
+      - ./services/appserver/totvs/resources/appserver.ini:/totvs/resources/appserver.ini
+      - ./services/appserver/totvs/resources/appserver_rest.ini:/totvs/resources/appserver_rest.ini
+      - ./services/appserver/totvs/resources/appserver_sqlite.ini:/totvs/resources/appserver_sqlite.ini
     networks:
       - totvs
     depends_on:
